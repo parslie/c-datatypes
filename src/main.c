@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "linkedlist.h"
+#include "hashmap.h"
 
 void test_linked_list(void)
 {
@@ -28,11 +29,46 @@ void test_linked_list(void)
     printf("Post-clear list length: %d\n", list.length);
 }
 
+void test_hash_map(void)
+{
+    HashMap map = hmap_create(sizeof(char), sizeof(int));
+
+    char key1 = 's';
+    char key2 = 'c';
+    int setVal1 = 69;
+    int setVal2 = 420;
+    hmap_set(&map, &key1, &setVal1);
+    hmap_set(&map, &key2, &setVal2);
+
+    int getVal1 = *(int *)hmap_get(&map, &key1);
+    int getVal2 = *(int *)hmap_get(&map, &key2);
+
+    printf("Value of '%c': %d\n", key1, getVal1);
+    printf("Value of '%c': %d\n\n", key2, getVal2);
+
+    char key3 = 'a';
+    int *getVal3 = (int *)hmap_get(&map, &key3);
+    printf("Pointer to node '%c' value: %p\n", key3, getVal3);
+
+    int setVal3 = 42069;
+    hmap_set(&map, &key3, &setVal3);
+    getVal3 = (int *)hmap_get(&map, &key3);
+    printf("Pointer to node '%c' value: %p\n", key3, getVal3);
+    printf("Value of '%c': %d\n", key3, *getVal3);
+
+    printf("\nSetting value of '%c' to value of '%c'...\n", key2, key1);
+    hmap_set(&map, &key2, &setVal1);
+    getVal2 = *(int *)hmap_get(&map, &key2);
+    printf("Value of '%c': %d\n", key2, getVal2);
+}
+
 int main(int argc, char *argv[])
 {
     char *divider = "------------------------------------";
 
     printf("%s\n Linked List:\n%s\n", divider, divider);
     test_linked_list();
+    printf("%s\n Hash Map:\n%s\n", divider, divider);
+    test_hash_map();
     return 0;
 }

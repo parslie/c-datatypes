@@ -11,9 +11,16 @@ struct HashNode
 };
 typedef struct HashNode HashNode;
 
+struct HashBucket
+{
+    struct HashNode *head;
+    struct HashNode *tail;
+};
+typedef struct HashBucket HashBucket;
+
 struct HashMap
 {
-    struct HashNode **buckets;
+    struct HashBucket *buckets;
     size_t capacity;
     size_t keySize;
     size_t valueSize;
@@ -21,10 +28,10 @@ struct HashMap
 typedef struct HashMap HashMap;
 
 HashMap hmap_create(size_t keySize, size_t valueSize);
-void hmap_clear(void);
+void hmap_clear(HashMap *map);
 
-void hmap_set(void *key, void *value);
-void *hmap_get(void *key);
-void hmap_remove(void *key);
+void hmap_set(HashMap *map, void *key, void *value);
+void *hmap_get(HashMap *map, void *key);
+void hmap_remove(HashMap *map, void *key);
 
 #endif
