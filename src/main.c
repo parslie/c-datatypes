@@ -67,6 +67,19 @@ void test_hash_map(void)
         HashBucket bucket = map.buckets[i];
         printf("Bucket '%d': (%p -> %p)\n", i, bucket.head, bucket.tail);
     }
+
+    printf("\nClearing map...");
+    hmap_clear(&map);
+
+    printf("\nLooping through buckets (head -> tail)...\n");
+    for (size_t i = 0; i < map.bucketCount; i++)
+    {
+        HashBucket bucket = map.buckets[i];
+        printf("Bucket '%d': (%p -> %p)\n", i, bucket.head, bucket.tail);
+    }
+
+    printf("\nDeleting map...\n");
+    hmap_free(&map);
 }
 
 void test_hash_map_removal(void)
@@ -95,6 +108,9 @@ void test_hash_map_removal(void)
         HashBucket bucket = map.buckets[i];
         printf("Bucket '%d': (%p -> %p)\n", i, bucket.head, bucket.tail);
     }
+
+    printf("\nDeleting map...\n");
+    hmap_free(&map);
 }
 
 int main(int argc, char *argv[])

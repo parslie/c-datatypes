@@ -13,7 +13,29 @@ HashMap hmap_create(size_t keySize, size_t valueSize)
 
 void hmap_clear(HashMap *map)
 {
+    for (size_t i = 0; i < map->bucketCount; i++)
+    {
+        HashBucket *bucket = map->buckets + i;
 
+        HashNode *curr = bucket->head;
+        while (curr != NULL)
+        {
+            HashNode *next = curr->next;
+            free(curr->key);
+            free(curr->value);
+            free(curr);
+            curr = next;
+        }
+
+        bucket->head = NULL;
+        bucket->tail = NULL;
+    }
+}
+
+void hmap_free(HashMap *map)
+{
+    hmap_clear(map);
+    free(map->buckets);
 }
 
 size_t generate_hash(HashMap *map, void *key)

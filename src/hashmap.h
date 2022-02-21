@@ -30,6 +30,7 @@ typedef struct HashMap HashMap;
 
 HashMap hmap_create(size_t keySize, size_t valueSize);
 void hmap_clear(HashMap *map);
+void hmap_free(HashMap *map);
 
 void hmap_set(HashMap *map, void *key, void *value);
 void *hmap_get(HashMap *map, void *key);
