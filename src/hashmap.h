@@ -2,6 +2,7 @@
 #define HASH_MAP_PAR
 
 #include <stddef.h>
+#include <stdbool.h>
 
 struct HashNode
 {
@@ -21,7 +22,7 @@ typedef struct HashBucket HashBucket;
 struct HashMap
 {
     struct HashBucket *buckets;
-    size_t capacity;
+    size_t bucketCount;
     size_t keySize;
     size_t valueSize;
 };
@@ -32,6 +33,6 @@ void hmap_clear(HashMap *map);
 
 void hmap_set(HashMap *map, void *key, void *value);
 void *hmap_get(HashMap *map, void *key);
-void hmap_remove(HashMap *map, void *key);
+bool hmap_remove(HashMap *map, void *key);
 
 #endif

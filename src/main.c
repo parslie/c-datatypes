@@ -60,6 +60,41 @@ void test_hash_map(void)
     hmap_set(&map, &key2, &setVal1);
     getVal2 = *(int *)hmap_get(&map, &key2);
     printf("Value of '%c': %d\n", key2, getVal2);
+
+    printf("\nLooping through buckets (head -> tail)...\n");
+    for (size_t i = 0; i < map.bucketCount; i++)
+    {
+        HashBucket bucket = map.buckets[i];
+        printf("Bucket '%d': (%p -> %p)\n", i, bucket.head, bucket.tail);
+    }
+}
+
+void test_hash_map_removal(void)
+{
+    HashMap map = hmap_create(sizeof(char), sizeof(int));
+    int value = 3;
+
+    printf("Populating map with 64 key-values...\n");
+    for (char i = 0; i < 64; i++)
+        hmap_set(&map, &i, &value);
+
+    printf("\nLooping through buckets (head -> tail)...\n");
+    for (size_t i = 0; i < map.bucketCount; i++)
+    {
+        HashBucket bucket = map.buckets[i];
+        printf("Bucket '%d': (%p -> %p)\n", i, bucket.head, bucket.tail);
+    }
+
+    printf("\nRemoving every key...\n");
+    for (char i = 0; i < 64; i += 2)
+        hmap_remove(&map, &i);
+
+    printf("\nLooping through buckets (head -> tail)...\n");
+    for (size_t i = 0; i < map.bucketCount; i++)
+    {
+        HashBucket bucket = map.buckets[i];
+        printf("Bucket '%d': (%p -> %p)\n", i, bucket.head, bucket.tail);
+    }
 }
 
 int main(int argc, char *argv[])
@@ -70,5 +105,7 @@ int main(int argc, char *argv[])
     test_linked_list();
     printf("%s\n Hash Map:\n%s\n", divider, divider);
     test_hash_map();
+    printf("%s\n Hash Map (removal):\n%s\n", divider, divider);
+    test_hash_map_removal();
     return 0;
 }

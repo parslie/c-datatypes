@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define DEFAULT_CAPACITY 10
+#define DEFAULT_BUCKET_COUNT 10
 
 HashMap hmap_create(size_t keySize, size_t valueSize)
 {
-    HashBucket *buckets = calloc(DEFAULT_CAPACITY, sizeof(HashBucket));
-    HashMap hashMap = { buckets, DEFAULT_CAPACITY, keySize, valueSize };
+    HashBucket *buckets = calloc(DEFAULT_BUCKET_COUNT, sizeof(HashBucket));
+    HashMap hashMap = { buckets, DEFAULT_BUCKET_COUNT, keySize, valueSize };
     return hashMap;
 }
 
@@ -16,10 +16,17 @@ void hmap_clear(HashMap *map)
 
 }
 
+size_t generate_hash(HashMap *map, void *key)
+{
+    size_t tmp = 0;
+    memcpy(&tmp, key, map->keySize);
+    return tmp % map->bucketCount;
+}
+
 void hmap_set(HashMap *map, void *key, void *value)
 {
-    size_t hash = 0; // TODO: create proper hash function
-    HashBucket *bucket = map->buckets + sizeof(HashBucket) * hash;
+    size_t hash = generate_hash(map, key);
+    HashBucket *bucket = map->buckets + hash;
 
     HashNode *curr = bucket->head;
     while (curr != NULL && memcmp(key, curr->key, map->keySize) != 0)
@@ -46,7 +53,7 @@ void hmap_set(HashMap *map, void *key, void *value)
 
 void *hmap_get(HashMap *map, void *key)
 {
-    size_t hash = 0; // TODO: create proper hash function
+    size_t hash = generate_hash(map, key);
     HashBucket bucket = map->buckets[hash];
 
     HashNode *curr = bucket.head;
@@ -60,7 +67,35 @@ void *hmap_get(HashMap *map, void *key)
     return NULL;
 }
 
-void hmap_remove(HashMap *map, void *key)
+bool hmap_remove(HashMap *map, void *key)
 {
-    size_t hash = 0; // TODO: create proper hash function
+    size_t hash = generate_hash(map, key);
+    HashBucket *bucket = map->buckets + hash;
+
+    HashNode *prev = NULL;
+    HashNode *curr = bucket->head;
+    while (curr != NULL)
+    {
+        if (memcmp(key, curr->key, map->keySize) == 0)
+        {
+            if (prev != NULL)
+                prev->next = curr->next;
+            else
+                bucket->head = curr->next;
+
+            if (curr->next == NULL)
+                bucket->tail = prev;
+
+            free(curr->key);
+            free(curr->value);
+            free(curr);
+
+            return true;
+        }
+
+        prev = curr;
+        curr = curr->next;
+    }
+
+    return false;
 }
