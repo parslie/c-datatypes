@@ -25,6 +25,7 @@ void llist_push_head(LinkedList *list, void *data)
 {
     LinkedNode *node = malloc(sizeof(LinkedNode));
     node->data = malloc(list->dataSize);
+    node->next = NULL;
     memcpy(node->data, data, list->dataSize);
     
     if (list->tail == NULL)
@@ -40,6 +41,7 @@ void llist_push_tail(LinkedList *list, void *data)
 {
     LinkedNode *node = malloc(sizeof(LinkedNode));
     node->data = malloc(list->dataSize);
+    node->next = NULL;
     memcpy(node->data, data, list->dataSize);
     
     if (list->head == NULL)
